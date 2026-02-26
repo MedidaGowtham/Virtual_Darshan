@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Darshan | Smooth Animations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================== */
+        /* DARK MODE (DEFAULT) EXACT VARIABLES        */
+        /* ========================================== */
+        :root {
+            --bg-main: #1a140e;
+            --bg-nav: rgba(10, 5, 0, 0.8);
+            --bg-card: rgba(30, 20, 10, 0.4);
+            --bg-card-info: linear-gradient(to top, rgba(0,0,0,0.9), rgba(20,10,5,0.7));
+            --bg-input: rgba(255, 255, 255, 0.05);
+            
+            --gold-primary: #d4af37;
+            --gold-accent: #d4af37;
+            
+            --text-main: #f3e5ab;
+            --text-secondary: #f3e5ab;
+            --text-card: #d4af37; 
+            --logo-color: #d4af37;
+            
+            --card-border: rgba(212, 175, 55, 0.3);
+            
+            --shadow-soft: 0 0px 0px transparent;
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.3);
+            --text-glow: 0 0 10px rgba(212, 175, 55, 0.5);
+            
+            --transition-speed: 0.5s;
+            
+            /* Textures */
+            --bg-texture: radial-gradient(circle at 50% 50%, rgba(40, 20, 5, 0.5) 0%, transparent 80%),
+                          url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            --img-filter: sepia(20%) brightness(0.9);
+            --img-hover-filter: sepia(0%) brightness(1.1);
+        }
+
+        /* ========================================== */
+        /* LIGHT MODE EXACT VARIABLES                 */
+        /* ========================================== */
+        body.light-mode {
+            --bg-main: #fdfcf5;
+            --bg-nav: rgba(253, 252, 245, 0.85);
+            --bg-card: rgba(255, 255, 255, 0.65);
+            --bg-card-info: #fff;
+            --bg-input: #fff;
+            
+            --gold-primary: #bfa35f;
+            --gold-accent: #d4af37;
+            
+            --text-main: #3d2b1f;
+            --text-secondary: #5e4b35;
+            --text-card: #3d2b1f; 
+            --logo-color: #3d2b1f; 
+            
+            --card-border: rgba(212, 175, 55, 0.4);
+            
+            --shadow-soft: 0 10px 30px rgba(61, 43, 31, 0.1);
+            --shadow-hover: 0 20px 40px rgba(61, 43, 31, 0.2);
+            --text-glow: none;
+            
+            --transition-speed: 0.4s;
+            
+            /* Textures */
+            --bg-texture: radial-gradient(circle at 50% 0%, rgba(255, 220, 150, 0.3) 0%, transparent 70%),
+                          url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            --img-filter: sepia(10%) contrast(1.05);
+            --img-hover-filter: sepia(0%) contrast(1.1);
+        }
+
+        /* --- GLOBAL STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: var(--bg-texture);
+            font-family: 'Lato', sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--bg-nav);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--logo-color);
+            text-shadow: var(--text-glow);
+            letter-spacing: 2px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .logo span { color: var(--gold-accent); font-size: 2rem; }
+
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--gold-primary);
+            color: var(--bg-main);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* --- CONTROLS --- */
+        .controls {
+            padding: 2rem 5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .search-container { width: 100%; max-width: 500px; position: relative; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 20px;
+            background: var(--bg-input);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            color: var(--text-main);
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all var(--transition-speed) ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--gold-accent);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--gold-primary);
+            color: #fff;
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        }
+
+        body:not(.light-mode) .filter-btn:hover,
+        body:not(.light-mode) .filter-btn.active {
+            color: #1a140e; 
+        }
+
+        /* --- GRID --- */
+        .gods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+            padding: 1rem 5% 4rem 5%;
+            perspective: 1000px; 
+        }
+
+        /* --- CARD --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            
+            /* The smooth transition is back here naturally! */
+            transition: transform var(--transition-speed) ease, 
+                        box-shadow var(--transition-speed) ease, 
+                        border-color var(--transition-speed) ease;
+                        
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            transform-style: preserve-3d;
+            height: 400px;
+            opacity: 0; 
+        }
+
+        .card:hover {
+            /* !important removed! The JS handles the unlock smoothly. */
+            transform: translateY(-10px) rotateX(0deg) scale(1.05);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--gold-accent);
+        }
+
+        .card-img-container {
+            height: 75%;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease, filter var(--transition-speed) ease;
+            filter: var(--img-filter);
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.05);
+            filter: var(--img-hover-filter);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .card:hover::after { opacity: 1; }
+
+        .card-info {
+            height: 25%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card-info);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            z-index: 2;
+            padding: 0 10px;
+            transition: background var(--transition-speed) ease;
+        }
+
+        .god-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem;
+            text-align: center;
+            color: var(--text-card);
+            letter-spacing: 1px;
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(128,128,128,0.2);
+            transition: color var(--transition-speed) ease;
+        }
+
+        /* --- PREMIUM SMOOTH ANIMATION --- */
+        @keyframes smoothAppear {
+            0% { 
+                opacity: 0; 
+                transform: translateY(40px) scale(0.95); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        @media (max-width: 600px) {
+            .gods-grid { grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); gap: 1.5rem; }
+            .logo { font-size: 1.4rem; }
+            .theme-toggle-btn { padding: 6px 12px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="javascript:void(0)" class="logo" id="logoLink">ॐ Virtual Darshan</a>
+        <button id="themeToggle" class="theme-toggle-btn">☀️ Light Mode</button>
+    </nav>
+
+    <header class="controls">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for a deity...">
+        </div>
+        <div class="filters">
+            <button class="filter-btn active" data-category="All">All</button>
+            <button class="filter-btn" data-category="Trimurti">Shiva Forms</button>
+            <button class="filter-btn" data-category="Dashavatara">Dashavatara</button>
+            <button class="filter-btn" data-category="Goddess">Goddess</button>
+            <button class="filter-btn" data-category="Others">Others</button>
+        </div>
+    </header>
+
+    <main id="godsGrid" class="gods-grid">
+
+        <div class="card" data-category="Others" data-name="Vighneswara Swamy">
+            <div class="card-img-container"><img src="photos/vigneshwara_swamy.jpg" alt="Vighneswara Swamy" class="card-img"></div>
+            <div class="card-info"><div class="god-name">Vighneswara Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Subrahmanya Swamy">
+            <div class="card-img-container"><img src="photos/subrahmanya_swamy.jpg" alt="Subrahmanya Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Subrahmanya Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Ayyappa Swamy">
+            <div class="card-img-container"><img src="photos/ayyappa_swamy.jpg" alt="Ayyappa Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Ayyappa Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Shiva Paarvathi">
+            <div class="card-img-container"><img src="photos/shiva_paarvathi.jpg" alt="Shiva Paarvathi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Shiva Paarvathi</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Ardhanareeswara">
+            <div class="card-img-container"><img src="photos/ardhanaariswara.jpg" alt="Ardhanareeswara" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Ardhanareeswara</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Veera Bhadra">
+            <div class="card-img-container"><img src="photos/veera_badhra.jpg" alt="Veera Bhadra" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Veera Bhadra</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Nataraja Swamy">
+            <div class="card-img-container"><img src="photos/nataraja_swamy.jpg" alt="Nataraja Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Nataraja Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Hari Hara Moorthy">
+            <div class="card-img-container"><img src="photos/hari_hara_moorthy.jpg" alt="Hari Hara Moorthy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Hari Hara Moorthy</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Kaala Bhairava">
+            <div class="card-img-container"><img src="photos/kaala_bhairava.jpg" alt="Kaala Bhairava" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Kaala Bhairava</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Lingodbhava Moorthy">
+            <div class="card-img-container"><img src="photos/lingodbhava_moorthy.jpg" alt="Lingodbhava Moorthy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Lingodbhava Moorthy</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Gajasamhaara Moorthy">
+            <div class="card-img-container"><img src="photos/gajasamhaara_moorthy.jpg" alt="Gajasamhaara Moorthy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Gajasamhaara Moorthy</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Dakshina Moorthy">
+            <div class="card-img-container"><img src="photos/dakshina_moorthy.jpg" alt="Dakshina Moorthy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Dakshina Moorthy</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Bhikshatana Moorthy">
+            <div class="card-img-container"><img src="photos/bhikshatana_moorthy.jpg" alt="Bhikshatana Moorthy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Bhikshatana Moorthy</div></div>
+        </div>
+
+        <div class="card" data-category="Trimurti" data-name="Eka Pada Moorthy">
+            <div class="card-img-container"><img src="photos/eka_pada_moorthy.jpg" alt="Eka Pada Moorthy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Eka Pada Moorthy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Kubera">
+            <div class="card-img-container"><img src="photos/kubera.jpg" alt="Kubera" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Kubera</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Paarvathi Devi">
+            <div class="card-img-container"><img src="photos/paarvathi_devi.jpg" alt="Paarvathi Devi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Paarvathi Devi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Baala Tripura Sundari">
+            <div class="card-img-container"><img src="photos/baala_tripura_sundari.jpg" alt="Baala Tripura Sundari" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Baala Tripura Sundari</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Gayatri Devi">
+            <div class="card-img-container"><img src="photos/gayatri_devi.jpg" alt="Gayatri Devi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Gayatri Devi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Annapoorna Devi">
+            <div class="card-img-container"><img src="photos/annapoorna_devi.jpg" alt="Annapoorna Devi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Annapoorna Devi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Lalitha Tripura Sundari">
+            <div class="card-img-container"><img src="photos/lalitha_tripura_sundari.jpg" alt="Lalitha Tripura Sundari" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Lalitha Tripura Sundari</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Sri Maha Lakshmi">
+            <div class="card-img-container"><img src="photos/sri_maha_lakshmi.jpg" alt="Sri Maha Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Sri Maha Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Maha Saraswati">
+            <div class="card-img-container"><img src="photos/maha_saraswati.jpg" alt="Maha Saraswati" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Maha Saraswati</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Raja Rajeshwara Devi">
+            <div class="card-img-container"><img src="photos/raja_rajeshwara_devi.jpg" alt="Raja Rajeshwara Devi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Raja Rajeshwara Devi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Mahishasura Mardhini">
+            <div class="card-img-container"><img src="photos/mahishasura_mardhini.jpg" alt="Mahishasura Mardhini" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Mahishasura Mardhini</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Gowri Devi">
+            <div class="card-img-container"><img src="photos/gowri_devi.jpg" alt="Gowri Devi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Gowri Devi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Jyeshtaa Devi">
+            <div class="card-img-container"><img src="photos/jyeshtaa_devi.jpg" alt="Jyeshtaa Devi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Jyeshtaa Devi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Vaasavi Maata">
+            <div class="card-img-container"><img src="photos/vaasavi_maata.jpg" alt="Vaasavi Maata" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Vaasavi Maata</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Dattatreya Swamy">
+            <div class="card-img-container"><img src="photos/dattatreya_swamy.jpg" alt="Dattatreya Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Dattatreya Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Shiridi Sai Baba">
+            <div class="card-img-container"><img src="photos/shiridi_sai_baba.jpg" alt="Shiridi Sai Baba" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Shiridi Sai Baba</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Aadi Shankara Charya">
+            <div class="card-img-container"><img src="photos/aadi_shankara_charya.jpg" alt="Aadi Shankara Charya" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Aadi Shankara Charya</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Vishvaksena">
+            <div class="card-img-container"><img src="photos/vishvaksena.jpg" alt="Vishvaksena" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Vishvaksena</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Venkateswara Swamy">
+            <div class="card-img-container"><img src="photos/venkateswara_swamy.jpg" alt="Venkateswara Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Venkateswara Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Radha Krishna">
+            <div class="card-img-container"><img src="photos/radha_krishna.jpg" alt="Radha Krishna" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Radha Krishna</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Sita Ram">
+            <div class="card-img-container"><img src="photos/sita_ram.jpg" alt="Sita Ram" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Sita Ram</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Satyanarayana Swamy">
+            <div class="card-img-container"><img src="photos/satyanarayana_swamy.jpg" alt="Satyanarayana Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Satyanarayana Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Panchamukha Anjaneya">
+            <div class="card-img-container"><img src="photos/pancha_mukha_aanajaneya.jpg" alt="Panchamukha Anjaneya" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Panchamukha Anjaneya</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Sudarshana Moorthy">
+            <div class="card-img-container"><img src="photos/sudharshana_moorthy.jpg" alt="Sudarshana Moorthy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Sudarshana Moorthy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Surya Bhagwan">
+            <div class="card-img-container"><img src="photos/surya_bhagwan.jpg" alt="Surya Bhagwan" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Surya Bhagwan</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Vidya Lakshmi">
+            <div class="card-img-container"><img src="photos/vidya_lakshmi.jpg" alt="Vidya Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Vidya Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Santhana Lakshmi">
+            <div class="card-img-container"><img src="photos/santhana_lakshmi.jpg" alt="Santhana Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Santhana Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Gaja Lakshmi">
+            <div class="card-img-container"><img src="photos/gaja_lakshmi.jpg" alt="Gaja Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Gaja Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Dhana Lakshmi">
+            <div class="card-img-container"><img src="photos/dhana_lakshmi.jpg" alt="Dhana Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Dhana Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Dhanya Lakshmi">
+            <div class="card-img-container"><img src="photos/dhanya_lakshmi.jpg" alt="Dhanya Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Dhanya Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Veera Lakshmi">
+            <div class="card-img-container"><img src="photos/veera_lakshmi.jpg" alt="Veera Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Veera Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Aadi Lakshmi">
+            <div class="card-img-container"><img src="photos/aadi_lakshmi.jpg" alt="Aadi Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Aadi Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Goddess" data-name="Vijaya Lakshmi">
+            <div class="card-img-container"><img src="photos/vijaya_lakshmi.jpg" alt="Vijaya Lakshmi" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Vijaya Lakshmi</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Lakshmi Hayagreeva Swamy">
+            <div class="card-img-container"><img src="photos/lakshmi_hageerva_swamy.jpg" alt="Lakshmi Hayagreeva Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Lakshmi Hayagreeva Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Lakshmi Narasimha Swamy">
+            <div class="card-img-container"><img src="photos/lakshmi_narasimha_swamy.jpg" alt="Lakshmi Narasimha Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Lakshmi Narasimha Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Anantha Padmanabha Swamy">
+            <div class="card-img-container"><img src="photos/anantha_padmanaabha_swamy.jpg" alt="Anantha Padmanabha Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Anantha Padmanabha Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Poori Jagannadha Swamy">
+            <div class="card-img-container"><img src="photos/poori_jagannadha_swamy.jpg" alt="Poori Jagannadha Swamy" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Poori Jagannadha Swamy</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Matsya Avatar">
+            <div class="card-img-container"><img src="photos/matsya_avatar.jpg" alt="Matsya Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Matsya Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Koorna Avatar">
+            <div class="card-img-container"><img src="photos/koorma_avatar.jpg" alt="Koorna Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Koorna Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Varaaha Avatar">
+            <div class="card-img-container"><img src="photos/varaaha_swamy.jpg" alt="Varaaha Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Varaaha Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Narasimha Avatar">
+            <div class="card-img-container"><img src="photos/narasimha_avatar.jpg" alt="Narasimha Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Narasimha Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Vaamana Avatar">
+            <div class="card-img-container"><img src="photos/vaamana_avatar.jpg" alt="Vaamana Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Vaamana Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Parasuraam Avatar">
+            <div class="card-img-container"><img src="photos/parasuraam_avatar.jpg" alt="Parasuraam Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Parasuraam Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Rama Avatar">
+            <div class="card-img-container"><img src="photos/rama_avatar.jpg" alt="Rama Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Rama Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Krishna Avatar">
+            <div class="card-img-container"><img src="photos/krishna_avatar.jpg" alt="Krishna Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Krishna Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Dashavatara" data-name="Buddha Avatar">
+            <div class="card-img-container"><img src="photos/buddha_avatar.jpg" alt="Buddha Avatar" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Buddha Avatar</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Badrinath">
+            <div class="card-img-container"><img src="photos/badrinaath_swamy.jpg" alt="Badrinath" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Badrinath</div></div>
+        </div>
+
+        <div class="card" data-category="Others" data-name="Raamanuja Acharya">
+            <div class="card-img-container"><img src="photos/raamaanuja_acharya.jpg" alt="Raamanuja Acharya" class="card-img" loading="lazy"></div>
+            <div class="card-info"><div class="god-name">Raamanuja Acharya</div></div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>May peace and prosperity be with you.</p>
+    </footer>
+
+    <script>
+        // ================== GOD LINKS ==================
+        const godLinks = {
+            "Vighneswara Swamy":"https://www.worldhistory.org/Ganesha/",
+            "Subrahmanya Swamy":"https://en.wikipedia.org/wiki/Kartikeya",
+            "Ayyappa Swamy":"https://en.wikipedia.org/wiki/Ayyappan",
+            "Shiva Paarvathi":"https://www.worldhistory.org/shiva/",
+            "Ardhanareeswara":"https://en.wikipedia.org/wiki/Ardhanarishvara",
+            "Veera Bhadra":"https://en.wikipedia.org/wiki/Virabhadra",
+            "Nataraja Swamy":"https://en.wikipedia.org/wiki/Nataraja",
+            "Hari Hara Moorthy":"https://en.wikipedia.org/wiki/Harihara",
+            "Kaala Bhairava":"https://en.wikipedia.org/wiki/Bhairava",
+            "Lingodbhava Moorthy":"https://en.wikipedia.org/wiki/Lingodbhava",
+            "Gajasamhaara Moorthy":"https://en.wikipedia.org/wiki/Gajasurasamhara",
+            "Dakshina Moorthy":"https://en.wikipedia.org/wiki/Dakshinamurthy",
+            "Bhikshatana Moorthy":"https://en.wikipedia.org/wiki/Bhikshatana",
+            "Eka Pada Moorthy":"https://en.wikipedia.org/wiki/Ekapada",
+            "Kubera":"https://en.wikipedia.org/wiki/Kubera",
+            "Paarvathi Devi":"https://en.wikipedia.org/wiki/Parvati",
+            "Baala Tripura Sundari":"https://en.wikipedia.org/wiki/Bala_Tripurasundari",
+            "Gayatri Devi":"https://en.wikipedia.org/wiki/Gayatri",
+            "Annapoorna Devi":"https://en.wikipedia.org/wiki/Annapurna_(goddess)",
+            "Lalitha Tripura Sundari":"https://en.wikipedia.org/wiki/Tripura_Sundari",
+            "Sri Maha Lakshmi":"https://en.wikipedia.org/wiki/Lakshmi",
+            "Maha Saraswati":"https://en.wikipedia.org/wiki/Saraswati",
+            "Raja Rajeshwara Devi":"https://en.wikipedia.org/wiki/Raj_Rajeshwari_Devi",
+            "Mahishasura Mardhini":"https://en.wikipedia.org/wiki/Durga",
+            "Gowri Devi":"https://en.wikipedia.org/wiki/Mahagauri",
+            "Jyeshtaa Devi":"https://en.wikipedia.org/wiki/Jyestha_(goddess)",
+            "Vaasavi Maata":"https://en.wikipedia.org/wiki/Vasavi_Kanyaka_Parameswari",
+            "Dattatreya Swamy":"https://en.wikipedia.org/wiki/Dattatreya",
+            "Shiridi Sai Baba":"https://en.wikipedia.org/wiki/Sai_Baba_of_Shirdi",
+            "Aadi Shankara Charya":"https://en.wikipedia.org/wiki/Adi_Shankara",
+            "Vishvaksena":"https://en.wikipedia.org/wiki/Vishvaksena",
+            "Venkateswara Swamy":"https://en.wikipedia.org/wiki/Venkateswara",
+            "Radha Krishna":"https://en.wikipedia.org/wiki/Radha_Krishna",
+            "Sita Ram":"https://en.wikipedia.org/wiki/Sita",
+            "Satyanarayana Swamy":"https://templesinindiainfo.com/sri-satyanarayana-swamy-katha/",
+            "Panchamukha Anjaneya":"https://www.jaishrihanumanchalisa.com/2020/05/panchamukhi-hanuman.html",
+            "Sudarshana Moorthy":"https://chennaiomsriskandasramam.wordpress.com/2009/01/17/lord-mahasudarshanamurthy/",
+            "Surya Bhagwan":"https://en.wikipedia.org/wiki/Surya",
+            "Vidya Lakshmi":"https://www.hindugodganesh.com/goddess-vidya-lakshmi",
+            "Santhana Lakshmi":"https://www.divyadesam.com/hindu-deities/sri-lakshmi/sri-santhana-lakshmi.shtml",
+            "Gaja Lakshmi":"https://en.wikipedia.org/wiki/Gajalakshmi",
+            "Dhana Lakshmi":"https://www.astroved.com/astropedia/en/goddess/dhana-lakshmi",
+            "Dhanya Lakshmi":"https://www.astroved.com/astropedia/en/goddess/dhanya-lakshmi",
+            "Veera Lakshmi":"https://www.astroved.com/astropedia/en/goddess/veera-lakshmi",
+            "Aadi Lakshmi":"https://www.astroved.com/astropedia/en/goddess/adi-lakshmi",
+            "Vijaya Lakshmi":"https://www.astroved.com/astropedia/en/goddess/vijaya-lakshmi",
+            "Lakshmi Hayagreeva Swamy":"https://en.wikipedia.org/wiki/Hayagriva",
+            "Lakshmi Narasimha Swamy":"https://en.wikipedia.org/wiki/Narasimha",
+            "Anantha Padmanabha Swamy":"https://en.wikipedia.org/wiki/Padmanabhaswamy_Temple",
+            "Poori Jagannadha Swamy":"https://www.rudraksha-ratna.com/articles/lord-jagannath",
+            "Matsya Avatar":"https://en.wikipedia.org/wiki/Matsya",
+            "Koorna Avatar":"https://en.wikipedia.org/wiki/Kurma",
+            "Varaaha Avatar":"https://en.wikipedia.org/wiki/Varaha",
+            "Narasimha Avatar":"https://en.wikipedia.org/wiki/Narasimha",
+            "Vaamana Avatar":"https://en.wikipedia.org/wiki/Vamana",
+            "Parasuraam Avatar":"https://en.wikipedia.org/wiki/Parashurama",
+            "Rama Avatar":"https://en.wikipedia.org/wiki/Rama",
+            "Krishna Avatar":"https://en.wikipedia.org/wiki/Krishna",
+            "Buddha Avatar":"https://en.wikipedia.org/wiki/Gautama_Buddha_in_Hinduism",
+            "Badrinath":"https://en.wikipedia.org/wiki/Badrinath_Temple",
+            "Raamanuja Acharya":"https://en.wikipedia.org/wiki/Ramanuja"
+        };
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.card');
+        const themeToggle = document.getElementById('themeToggle');
+        const logoLink = document.getElementById('logoLink');
+
+        // ================== FIX: UNLOCK HOVER AFTER ANIMATION ==================
+        // This ensures the CSS transition takes over beautifully once the entrance finishes.
+        cards.forEach(card => {
+            card.addEventListener('animationend', () => {
+                card.style.animation = 'none'; // Unlocks the forwards state
+                card.style.opacity = '1';      // Keeps it visible
+            });
+        });
+
+        // ================== CLICK OPEN ==================
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const name = card.getAttribute('data-name');
+                if(godLinks[name]){
+                    window.open(godLinks[name], '_blank');
+                }
+            });
+        });
+
+        // Smooth Scroll to Top on Logo Click
+        logoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Theme Toggle Logic
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            themeToggle.innerHTML = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
+        });
+
+        // Filter State
+        let currentCategory = 'All';
+
+        // Filter Button Logic
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.classList.contains('active')) return;
+                
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.getAttribute('data-category');
+                filterCards();
+            });
+        });
+
+        // Search Input Logic
+        searchInput.addEventListener('input', () => {
+            filterCards();
+        });
+
+        // Main Filter Function
+        function filterCards() {
+            const query = searchInput.value.toLowerCase();
+            let delayCounter = 0;
+
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                const cardName = card.querySelector('.god-name').innerText.toLowerCase();
+
+                const matchesCategory = currentCategory === 'All' || cardCategory === currentCategory;
+                const matchesSearch = cardName.includes(query);
+
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'flex';
+                    
+                    // Reset animation and opacity
+                    card.style.animation = 'none';
+                    card.style.opacity = '0'; 
+                    card.offsetHeight; // trigger reflow
+                    
+                    card.style.animation = `smoothAppear 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${delayCounter * 0.05}s forwards`;
+                    delayCounter++;
+                } else {
+                    card.style.display = 'none';
+                    card.style.opacity = '0'; 
+                }
+            });
+        }
+        
+        // Initial Page Load staggered animation
+        let loadCounter = 0;
+        cards.forEach(card => {
+            card.style.animation = `smoothAppear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) ${loadCounter * 0.04}s forwards`;
+            loadCounter++;
+        });
+
+    </script>
+</body>
+</html>
